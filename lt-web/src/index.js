@@ -1,13 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import AppRoutes from './routes';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import AppRoutes from "./routes/routes";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthGoogleProvider } from "./contexts/AuthGoogleProvider"
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AppRoutes/>
+    <AuthGoogleProvider>
+      <AppRoutes />
+    </AuthGoogleProvider>
   </React.StrictMode>
 );
 
