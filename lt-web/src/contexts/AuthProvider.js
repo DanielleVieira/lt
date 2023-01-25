@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ login, signed: !!user, logout, user , error}}
+      value={{ login, signed: !!sessionStorage.getItem("@AuthFirebase:user"), logout, user , error}}
     >
       {children}
     </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
@@ -7,9 +7,17 @@ import logo from "../../assets/logo.svg";
 import LoginPanel from "./LoginPanel";
 import { AuthContext } from "../../contexts/AuthProvider";
 import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { error } = useContext(AuthContext);
+  const { error, signed } = useContext(AuthContext);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if(signed) {
+      navigate("/home");
+    }
+  }, [signed, navigate]);
 
   return (
     <Container>
@@ -35,7 +43,7 @@ const Login = () => {
           <h1 className="text-center text-primary">
             O que é um lar temporário
           </h1>
-          <h4 className="mt-3" style={{ textAlign: "justify", textIndent: 16 }}>
+          <h4 className="mt-3" style={{ textAlign: "justify"}}>
             O lar temporário é quando uma pessoa, sozinha ou em parceria com
             alguma ONG, se compromete a acolher em casa um animal abandonado por
             um tempo determinado.
