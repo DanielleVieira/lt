@@ -52,8 +52,8 @@ const RegisterShelterForm = (props) => {
             .required("Obrigatório"),
           contact: Yup.string()
             .matches(
-              /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/,
-              { message: "Número de contato inválido" }
+              '^((1[1-9])|([2-9][0-9]))((3[0-9]{3}[0-9]{4})|(9[0-9]{3}[0-9]{5}))$',
+              { message: "Número de contato inválido. Utilize apenas números e inclua o DDD" }
             )
             .required("Obrigatório"),
           description: Yup.string()
@@ -198,7 +198,7 @@ const RegisterShelterForm = (props) => {
                 label="Contato"
                 name="contact"
                 type="text"
-                placeholder="(99) 99999 - 9999"
+                placeholder="99999999999"
               />
             </Row>
             <Row className="my-3">
