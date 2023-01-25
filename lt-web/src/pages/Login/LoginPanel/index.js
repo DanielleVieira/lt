@@ -8,16 +8,14 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider
 } from "firebase/auth";
-import { Navigate } from "react-router-dom";
 
 const LoginPanel = () => {
-  const { login, signed } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   
-  if (!signed) {
     return (
       <Container
         style={{ maxWidth: "400px", minWidth: "200px" }}
-        className="shadow p-3 mb-5 bg-body rounded border"
+        className="p-3 mb-5 bg-body rounded border"
       >
         <Row>
           <h1 className="text-center text-primary">LogIn</h1>
@@ -55,9 +53,6 @@ const LoginPanel = () => {
         </Row>
       </Container>
     );
-  } else {
-    return <Navigate to={"/home"} />;
-  }
 };
 
 export default LoginPanel;

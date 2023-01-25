@@ -2,19 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import AppRoutes from "./routes/routes";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AuthProvider } from "./contexts/AuthProvider"
-import reportWebVitals from "./reportWebVitals";
+import { AuthProvider } from "./contexts/AuthProvider";
+import { ToastProvider } from "./contexts/ToastProvider ";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ToastProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
