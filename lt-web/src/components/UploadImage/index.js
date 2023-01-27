@@ -31,6 +31,9 @@ const UploadImage = (props) => {
     })
       .then(() => {
         window.location.reload(true);
+        setToastText("Salvo com sucesso!");
+        setVariant("success");
+        setShowToast(true);
       })
       .catch((error) => {
         setToastText("Ocorreu um erro ao salvar!");
@@ -49,7 +52,7 @@ const UploadImage = (props) => {
       (snapshot) => {
         const snapProgress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(snapProgress);
+        setProgress(parseInt(snapProgress));
       },
       (error) => {
         setToastText("Ocorreu um erro ao salvar!");

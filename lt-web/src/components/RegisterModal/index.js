@@ -18,7 +18,10 @@ const RegisterModal = (props) => {
       keyboard={false}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Cadastrar um lar temporário</Modal.Title>
+        <Modal.Title>
+          Cadastrar um lar temporário{" "}
+          <p className="text-danger fs-6">* Opcional</p>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Tab.Container id="left-tabs" defaultActiveKey="alert">

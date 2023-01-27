@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Container, Stack, Modal, Alert } from "react-bootstrap";
+import { Button, Container, Stack, Modal, Alert, Col, Row } from "react-bootstrap";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import RegisterModal from "../../components/RegisterModal";
@@ -9,7 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthProvider";
 import ShelterList from "./ShelterList";
 import { ToastContext } from "../../contexts/ToastProvider ";
-import "./index.css";
+import { ArrowDown } from "../../assets/icons/OtherIcons";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -34,10 +34,11 @@ const Home = () => {
         })
         .catch((error) => {
           setToastText("Ocorreu um erro ao carregar os dados");
+          setVariant("danger");
           setShowToast(true);
         });
     }
-  }, [haveShelter, setHaveShelter, user, setShowToast, setToastText]);
+  }, [haveShelter, setHaveShelter, user, setShowToast, setToastText, setVariant]);
 
   const search = () => {
     setAlertModal(false);
@@ -72,7 +73,7 @@ const Home = () => {
         <Container fluid className="bg-primary">
           <Stack className="d-flex flex-md-row overflow-hidden">
             <Button
-              style={{ width: "300px", height: "150px" }}
+              style={{ width: "300px", height: "150px"}}
               variant="light"
               className="mx-auto my-5 p-5"
               onClick={() => setAlertModal(true)}
@@ -80,7 +81,7 @@ const Home = () => {
               BUSCAR UM LAR
             </Button>
             <Button
-              style={{ width: "300px", height: "150px" }}
+              style={{ width: "300px", height: "150px"}}
               variant="light"
               className="mx-auto my-5 p-5 btn-home"
               onClick={() => {
@@ -97,6 +98,7 @@ const Home = () => {
             setModalShow={setModalShow}
             setHaveShelter={setHaveShelter}
           />
+          <Row className={isSearching ? "d-block" : "d-none"}><Col className="d-flex justify-content-center"><ArrowDown/></Col></Row>
         </Container>
 
         <Container className={isSearching ? "d-block" : "d-none"}>

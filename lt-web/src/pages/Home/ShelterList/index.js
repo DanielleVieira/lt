@@ -10,9 +10,9 @@ const ShelterList = (props) => {
   const [results, setResults] = useState([]);
   const [list, setList] = useState([]);
 
-  const SEARCH_RADIUS = 50; //Km
+  const SEARCH_RADIUS = 300; //Km
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (props.userPosition.length > 0) {
       geoQueryShelters(props.userPosition, SEARCH_RADIUS, (matchingDocs) => {
@@ -24,7 +24,7 @@ const ShelterList = (props) => {
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      Por padrão o site mostra apenas os lares dentro de um raio de 50 km
+      Por padrão o site mostra apenas os lares dentro de um raio de 300 km
     </Tooltip>
   );
 
@@ -67,7 +67,7 @@ const ShelterList = (props) => {
                       className="mt-2"
                       onClick={() => navigate(`/profile/${snap.id}`)}
                     >
-                      Ver Mais
+                      Ver mais informações
                     </Button>
                   </ListGroup.Item>
                 );

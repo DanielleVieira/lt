@@ -114,7 +114,7 @@ const Profile = (props) => {
                     <Card className="text-center border-0">
                       <Card.Body>
                         <Card.Title className="text-primary mt-3" as="h3">
-                          Imagens{" "}
+                          Fotos{" "}
                           <Button
                             className={isOwner ? "d-inline" : "d-none"}
                             onClick={() => setUploadImage(true)}
@@ -144,14 +144,20 @@ const Profile = (props) => {
                               );
                             })}
                         </Row>
-                        <Row>
-                          <Button
-                            className="p-3 mt-3"
-                            onClick={() => navigate("/images/" + id)}
-                          >
-                            Ver mais
-                          </Button>
-                        </Row>
+                        {profileData.images.length > 0 ? (
+                          <Row>
+                            <Button
+                              className="p-3 mt-3"
+                              onClick={() => navigate("/images/" + id)}
+                            >
+                              Ver todas as Fotos
+                            </Button>
+                          </Row>
+                        ) : (
+                          <Card.Text>
+                            Nenhuma foto foi adicionada a este perfil
+                          </Card.Text>
+                        )}
                       </Card.Body>
                     </Card>
                   </Col>

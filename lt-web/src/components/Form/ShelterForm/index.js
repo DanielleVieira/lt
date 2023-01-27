@@ -211,7 +211,7 @@ const RegisterShelterForm = (props) => {
 
             <Row className="my-3">
               <TextInput
-                label="Aceita quantos animais?"
+                label="Aceita até quantos animais?"
                 name="number"
                 type="number"
               />
@@ -250,7 +250,7 @@ const RegisterShelterForm = (props) => {
             </Row>
             <Row className="my-3">
               <fieldset>
-                <label>Redes Sociais</label>
+                <label>Redes Sociais <span className="text-danger">*</span></label>
                 <Row className="mb-3">
                   <TextInput
                     label="Facebook"
