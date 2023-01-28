@@ -6,6 +6,7 @@ import { db, storage } from "../../services/firebase";
 import EmptyImage from "../../assets/emptyImage.svg";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { ToastContext } from "../../contexts/ToastProvider ";
+import { useNavigate } from "react-router-dom";
 
 const UploadImage = (props) => {
   const [image, setImage] = useState(null);
@@ -13,6 +14,7 @@ const UploadImage = (props) => {
   const [progress, setProgress] = useState(0);
   const { user } = useContext(AuthContext);
   const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     props.setShow(false);
@@ -30,7 +32,7 @@ const UploadImage = (props) => {
       }),
     })
       .then(() => {
-        window.location.reload(true);
+        navigate(0);
         setToastText("Salvo com sucesso!");
         setVariant("success");
         setShowToast(true);

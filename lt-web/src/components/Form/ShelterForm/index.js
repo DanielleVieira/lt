@@ -11,10 +11,12 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import { useContext } from "react";
 import { generateHash } from "../../../services/geolocation";
 import { ToastContext } from "../../../contexts/ToastProvider ";
+import { useNavigate } from "react-router-dom";
 
 const ShelterForm = (props) => {
   const { user } = useContext(AuthContext);
   const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -136,7 +138,7 @@ const ShelterForm = (props) => {
                     setVariant("sucess");
                     setShowToast(true);
                     setSubmitting(false);
-                    window.location.reload(true);
+                    navigate(0)
                   });
                 },
                 (error) => {
