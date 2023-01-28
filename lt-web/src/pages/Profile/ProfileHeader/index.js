@@ -1,21 +1,55 @@
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/esm/Button";
-import Stack from "react-bootstrap/Stack";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Stack,
+  Modal,
+} from "react-bootstrap/";
 import {
   Twitter,
   Facebook,
   Instagram,
 } from "../../../assets/icons/SocialMedia";
-import { PhoneFill, House } from "../../../assets/icons/OtherIcons";
+import { PhoneFill, House, Trash } from "../../../assets/icons/OtherIcons";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../../services/firebase";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../contexts/AuthProvider";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContext } from "../../../contexts/ToastProvider ";
 
 const ProfileHeader = (props) => {
+  const { user } = useContext(AuthContext);
+  const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
+  const [show, setShow] = useState(false);
+  const params = useParams();
+  const id = params.id;
+  const navigate = useNavigate();
+
   const icons = {
     twitter: <Twitter />,
     facebook: <Facebook />,
     instagram: <Instagram />,
+  };
+
+  const handleDelete = () => {
+    setShow(false);
+    const docRef = doc(db, `shelters/${user.uid}`);
+    deleteDoc(docRef)
+      .then(() => {
+        navigate("/home");
+        setToastText("Excluido com sucesso!");
+        setVariant("success");
+        setShowToast(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setToastText("Ocorreu um erro durante a exclusão!");
+        setVariant("danger");
+        setShowToast(true);
+      });
   };
 
   return (
@@ -68,6 +102,30 @@ const ProfileHeader = (props) => {
           </Card>
         </Col>
       </Row>
+      {user && user.uid === id ? (
+        <Container>
+          <Row>
+            <Col className="d-flex justify-content-center mb-3">
+              <Button
+                onClick={() => setShow(true)}
+                className="d-flex align-items-center"
+              >
+                <Trash /> Excluir
+              </Button>
+            </Col>
+          </Row>
+          <Modal show={show}>
+            <Modal.Body>
+              Tem certeza que deseja excluir este perfil? Esta ação não poderá
+              ser desfeita!
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={() => setShow(false)}>Não</Button>
+              <Button onClick={handleDelete}>Sim</Button>
+            </Modal.Footer>
+          </Modal>
+        </Container>
+      ) : null}
     </Container>
   );
 };

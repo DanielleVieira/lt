@@ -4,14 +4,11 @@ import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
 import { Checkbox } from "../Checkbox";
 import { Select } from "../Select";
-import Button from "react-bootstrap/esm/Button";
+import { Button, Container, Row, Stack} from "react-bootstrap";
 import { db } from "../../../services/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useContext } from "react";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/Row";
-import { Stack } from "react-bootstrap";
 import { generateHash } from "../../../services/geolocation";
 import { ToastContext } from "../../../contexts/ToastProvider ";
 
