@@ -1,11 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  Stack,
-  Col,
-  Row,
-} from "react-bootstrap";
+import { Button, Container, Stack, Col, Row } from "react-bootstrap";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import RegisterModal from "../../components/RegisterModal";
@@ -16,6 +10,7 @@ import { AuthContext } from "../../contexts/AuthProvider";
 import ShelterList from "./ShelterList";
 import { ToastContext } from "../../contexts/ToastProvider ";
 import { ArrowDown } from "../../assets/icons/OtherIcons";
+import Loading from "../../components/Loading";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -24,6 +19,7 @@ const Home = () => {
   const [haveShelter, setHaveShelter] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [userPosition, setUserPosition] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const shelterInitialValues = {
     name: "",
@@ -59,6 +55,7 @@ const Home = () => {
           if (docSnap.exists()) {
             setHaveShelter(true);
           }
+          setLoading(false);
         })
         .catch((error) => {
           setToastText("Ocorreu um erro ao carregar os dados");
@@ -100,53 +97,65 @@ const Home = () => {
     }
   };
 
-  return (
-    <>
-      <NavBar />
-      <main className="min-vh-100">
-        <Container fluid className="bg-primary">
-          <Stack className="d-flex flex-md-row overflow-hidden">
-            <Button
-              style={{ width: "300px"}}
-              variant="light"
-              className="mx-auto my-4 p-5 fs-5"
-              onClick={search}
-            >
-              BUSCAR UM LAR
-            </Button>
-            <Button
-              style={{ width: "300px"}}
-              variant="light"
-              className="mx-auto my-4 p-5 fs-5"
-              onClick={() => {
-                haveShelter
-                  ? navigate(`/profile/${user.uid}`)
-                  : setModalShow(true);
-              }}
-            >
-              {haveShelter ? "VER PERFIL DO LAR" : "CADASTRAR UM LAR"}
-            </Button>
-          </Stack>
-          <RegisterModal
-            show={modalShow}
-            setModalShow={setModalShow}
-            shelterInitialValues={shelterInitialValues}
-            type={"Cadastrar"}
-          />
-          <Row className={isSearching ? "d-block" : "d-none"}>
-            <Col className="d-flex justify-content-center">
-              <ArrowDown />
-            </Col>
-          </Row>
-        </Container>
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <Loading />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <NavBar />
+        <main className="min-vh-100">
+          <Container fluid className="bg-primary">
+            <Stack className="d-flex flex-md-row overflow-hidden">
+              <Button
+                style={{ width: "300px" }}
+                variant="light"
+                className="mx-auto my-4 p-5 fs-5"
+                onClick={search}
+              >
+                BUSCAR UM LAR
+              </Button>
+              <Button
+                style={{ width: "300px" }}
+                variant="light"
+                className="mx-auto my-4 p-5 fs-5"
+                onClick={() => {
+                  haveShelter
+                    ? navigate(`/profile/${user.uid}`)
+                    : setModalShow(true);
+                }}
+              >
+                {haveShelter ? "VER PERFIL DO LAR" : "CADASTRAR UM LAR"}
+              </Button>
+            </Stack>
+            <RegisterModal
+              show={modalShow}
+              setModalShow={setModalShow}
+              shelterInitialValues={shelterInitialValues}
+              type={"Cadastrar"}
+            />
+            <Row className={isSearching ? "d-block" : "d-none"}>
+              <Col className="d-flex justify-content-center">
+                <ArrowDown />
+              </Col>
+            </Row>
+          </Container>
 
-        <Container className={isSearching ? "d-block" : "d-none"}>
-          <ShelterList userPosition={userPosition} isSearching={isSearching} />
-        </Container>
-      </main>
-      <Footer />
-    </>
-  );
+          <Container className={isSearching ? "d-block" : "d-none"}>
+            <ShelterList
+              userPosition={userPosition}
+              isSearching={isSearching}
+            />
+          </Container>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 };
 
 export default Home;
