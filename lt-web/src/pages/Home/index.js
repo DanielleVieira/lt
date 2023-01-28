@@ -3,8 +3,6 @@ import {
   Button,
   Container,
   Stack,
-  Modal,
-  Alert,
   Col,
   Row,
 } from "react-bootstrap";
@@ -25,7 +23,6 @@ const Home = () => {
   const [modalShow, setModalShow] = useState(false);
   const [haveShelter, setHaveShelter] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [alertModal, setAlertModal] = useState(false);
   const [userPosition, setUserPosition] = useState([]);
   const navigate = useNavigate();
   const shelterInitialValues = {
@@ -79,11 +76,9 @@ const Home = () => {
   ]);
 
   const search = () => {
-    setAlertModal(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setAlertModal(false);
           const { latitude, longitude } = position.coords;
           setUserPosition([latitude, longitude]);
           setIsSearching(true);
@@ -112,17 +107,17 @@ const Home = () => {
         <Container fluid className="bg-primary">
           <Stack className="d-flex flex-md-row overflow-hidden">
             <Button
-              style={{ width: "300px", height: "150px" }}
+              style={{ width: "300px"}}
               variant="light"
-              className="mx-auto my-5 p-5"
+              className="mx-auto my-4 p-5 fs-5"
               onClick={search}
             >
               BUSCAR UM LAR
             </Button>
             <Button
-              style={{ width: "300px", height: "150px" }}
+              style={{ width: "300px"}}
               variant="light"
-              className="mx-auto my-5 p-5 btn-home"
+              className="mx-auto my-4 p-5 fs-5"
               onClick={() => {
                 haveShelter
                   ? navigate(`/profile/${user.uid}`)
@@ -146,18 +141,6 @@ const Home = () => {
         </Container>
 
         <Container className={isSearching ? "d-block" : "d-none"}>
-          <Modal show={alertModal}>
-            <Modal.Header>
-              <Modal.Title>Aviso</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>
-              <Alert variant={"danger"}>
-                Para realizar a busca é preciso permitir que o site acesse sua
-                geocalização quando solicitado.
-              </Alert>
-            </Modal.Body>
-          </Modal>
           <ShelterList userPosition={userPosition} isSearching={isSearching} />
         </Container>
       </main>
