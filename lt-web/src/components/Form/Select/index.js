@@ -8,7 +8,7 @@ export const Select = ({ label, ...props }) => {
       <Form.Group>
         <Form.Label htmlFor={props.id || props.name}>{label}</Form.Label>
         <Form.Select {...field} {...props} />
-        <Form.Text>
+        <Form.Text className="text-danger">
           {meta.touched && meta.error ? (
             <div className="error">{meta.error}</div>
           ) : null}

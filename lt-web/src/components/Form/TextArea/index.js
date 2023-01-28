@@ -13,7 +13,7 @@ export const TextArea = ({ label, ...props }) => {
           {...field}
           {...props}
         ></Form.Control>
-        <Form.Text>
+        <Form.Text className="text-danger">
           {meta.touched && meta.error ? (
             <div className="error">{meta.error}</div>
           ) : null}

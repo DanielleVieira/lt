@@ -8,7 +8,7 @@ import { Button, Container, Row, Stack } from "react-bootstrap";
 import { db } from "../../../services/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../../../contexts/AuthProvider";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { generateHash } from "../../../services/geolocation";
 import { ToastContext } from "../../../contexts/ToastProvider ";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,106 @@ import { useNavigate } from "react-router-dom";
 const ShelterForm = (props) => {
   const { user } = useContext(AuthContext);
   const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const dataFormat = (values, type, size) => {
+    return {
+      name: values.name,
+      contact: values.contact,
+      description: values.description,
+      acceptConditions: {
+        type: type,
+        size: size,
+        number: values.number,
+        time: values.time,
+        payment: `${values.payment ? "sim" : "não"}`,
+        havePets: `${values.havePets ? "sim" : "não"}`,
+      },
+      social: {
+        facebook: values.facebook,
+        twitter: values.twitter,
+        instagram: values.instagram,
+      },
+      images: values.images,
+    };
+  };
+
+  const handleSubmit = (values, setSubmitting) => {
+    const type = [];
+    const size = [];
+
+    if (values.cats) {
+      type.push("gatos");
+    }
+    if (values.dogs) {
+      type.push("cachorros");
+    }
+    if (values.others) {
+      type.push("outros");
+    }
+
+    if (values.small) {
+      size.push("pequenos");
+    }
+    if (values.middle) {
+      size.push("médios");
+    }
+    if (values.big) {
+      size.push("grandes");
+    }
+
+    const submitData = dataFormat(values, size, type);
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLoading(true);
+          const { latitude, longitude } = position.coords;
+          const docRef = doc(db, "shelters", user.uid);
+          setDoc(
+            docRef,
+            {
+              ...submitData,
+              location: generateHash(latitude, longitude),
+            },
+            { merge: true }
+          )
+            .then(() => {
+              props.setModalShow(false);
+              setToastText("Salvo com sucesso!");
+              setVariant("sucess");
+              setShowToast(true);
+              setSubmitting(false);
+              setLoading(false);
+              navigate(0);
+            })
+            .catch((error) => {
+              setToastText(
+                "Ocorreu um erro ao salvar!"
+              );
+              setVariant("danger");
+              setShowToast(true);
+              setSubmitting(false);
+              setLoading(false);
+            });
+        },
+        (error) => {
+          setToastText(
+            "Para completar o cadastro é necessário permitir o acesso a geolocalização"
+          );
+          setVariant("danger");
+          setShowToast(true);
+        }
+      );
+    } else {
+      props.setToastText(
+        "Não foi possível acessar a geolocalização nesse navegador!"
+      );
+      setVariant("danger");
+      props.setShowToast(true);
+    }
+  };
 
   return (
     <>
@@ -77,86 +176,7 @@ const ShelterForm = (props) => {
           images: Yup.array(Yup.object()),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          const type = [];
-          const size = [];
-
-          if (values.cats) {
-            type.push("gatos");
-          }
-          if (values.dogs) {
-            type.push("cachorros");
-          }
-          if (values.others) {
-            type.push("outros");
-          }
-
-          if (values.small) {
-            size.push("pequenos");
-          }
-          if (values.middle) {
-            size.push("médios");
-          }
-          if (values.big) {
-            size.push("grandes");
-          }
-
-          const submitData = {
-            name: values.name,
-            contact: values.contact,
-            description: values.description,
-            acceptConditions: {
-              type: type,
-              size: size,
-              number: values.number,
-              time: values.time,
-              payment: `${values.payment ? "sim" : "não"}`,
-              havePets: `${values.havePets ? "sim" : "não"}`,
-            },
-            social: {
-              facebook: values.facebook,
-              twitter: values.twitter,
-              instagram: values.instagram,
-            },
-            images: values.images,
-          };
-          (() => {
-            if ("geolocation" in navigator) {
-              navigator.geolocation.getCurrentPosition(
-                (position) => {
-                  const { latitude, longitude } = position.coords;
-                  const docRef = doc(db, "shelters", user.uid);
-                  setDoc(
-                    docRef,
-                    {
-                      ...submitData,
-                      location: generateHash(latitude, longitude),
-                    },
-                    { merge: true }
-                  ).then(() => {
-                    props.setModalShow(false);
-                    setToastText("Salvo com sucesso!");
-                    setVariant("sucess");
-                    setShowToast(true);
-                    setSubmitting(false);
-                    navigate(0)
-                  });
-                },
-                (error) => {
-                  setToastText(
-                    "Para completar o cadastro é necessário permitir o acesso a geolocalização"
-                  );
-                  setVariant("danger");
-                  setShowToast(true);
-                }
-              );
-            } else {
-              props.setToastText(
-                "Não foi possível acessar a geolocalização nesse navegador!"
-              );
-              setVariant("danger");
-              props.setShowToast(true);
-            }
-          })();
+          handleSubmit(values, setSubmitting);
         }}
       >
         <Form>
@@ -253,7 +273,9 @@ const ShelterForm = (props) => {
           </Container>
           <Row>
             <Stack direction="horizontal" className="justify-content-end">
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Salvando..." : "Salvar"}
+              </Button>
             </Stack>
           </Row>
         </Form>

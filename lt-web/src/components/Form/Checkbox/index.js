@@ -8,7 +8,7 @@ export const Checkbox = ({ children, ...props }) => {
       <label className="checkbox-input">
         <Form.Check type="checkbox" label={children} {...field} {...props} />
       </label>
-      <Form.Text>
+      <Form.Text className="text-danger">
         {meta.touched && meta.error ? (
           <div className="error">{meta.error}</div>
         ) : null}
