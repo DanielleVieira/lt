@@ -79,10 +79,11 @@ const Home = () => {
   ]);
 
   const search = () => {
-    setAlertModal(false);
+    setAlertModal(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          setAlertModal(false);
           const { latitude, longitude } = position.coords;
           setUserPosition([latitude, longitude]);
           setIsSearching(true);
@@ -114,7 +115,7 @@ const Home = () => {
               style={{ width: "300px", height: "150px" }}
               variant="light"
               className="mx-auto my-5 p-5"
-              onClick={() => setAlertModal(true)}
+              onClick={search}
             >
               BUSCAR UM LAR
             </Button>
@@ -156,12 +157,6 @@ const Home = () => {
                 geocalização quando solicitado.
               </Alert>
             </Modal.Body>
-
-            <Modal.Footer>
-              <Button variant="primary" onClick={search}>
-                Prosseguir
-              </Button>
-            </Modal.Footer>
           </Modal>
           <ShelterList userPosition={userPosition} isSearching={isSearching} />
         </Container>
