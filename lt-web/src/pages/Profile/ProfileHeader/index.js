@@ -12,18 +12,49 @@ import {
   Facebook,
   Instagram,
 } from "../../../assets/icons/SocialMedia";
-import { PhoneFill, House, Trash } from "../../../assets/icons/OtherIcons";
+import {
+  PhoneFill,
+  House,
+  Trash,
+  Edit,
+} from "../../../assets/icons/OtherIcons";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../services/firebase";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContext } from "../../../contexts/ToastProvider ";
+import RegisterModal from "../../../components/RegisterModal";
 
 const ProfileHeader = (props) => {
   const { user } = useContext(AuthContext);
   const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
-  const [show, setShow] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const shelterInitialValues = {
+    name: props.data.name,
+    contact: props.data.contact,
+    description: props.data.description,
+    // aceept conditions
+    payment: false,
+    time: props.data.acceptConditions.time,
+    havePets: false,
+    number: props.data.acceptConditions.number,
+    //type
+    cats: true,
+    dogs: true,
+    others: true,
+    //size
+    small: true,
+    middle: true,
+    big: true,
+    //social medias
+    facebook: props.data.social.facebook,
+    twitter: props.data.social.twitter,
+    instagram: props.data.social.instagram,
+    images: props.data.images,
+  };
+
   const params = useParams();
   const id = params.id;
   const navigate = useNavigate();
@@ -35,7 +66,7 @@ const ProfileHeader = (props) => {
   };
 
   const handleDelete = () => {
-    setShow(false);
+    setShowConfirmation(false);
     const docRef = doc(db, `shelters/${user.uid}`);
     deleteDoc(docRef)
       .then(() => {
@@ -107,23 +138,35 @@ const ProfileHeader = (props) => {
           <Row>
             <Col className="d-flex justify-content-center mb-3">
               <Button
-                onClick={() => setShow(true)}
+                onClick={() => setShowEdit(true)}
+                className="d-flex align-items-center"
+              >
+                <Edit /> Editar
+              </Button>
+              <Button
+                onClick={() => setShowConfirmation(true)}
                 className="d-flex align-items-center"
               >
                 <Trash /> Excluir
               </Button>
             </Col>
           </Row>
-          <Modal show={show}>
+          <Modal show={showConfirmation}>
             <Modal.Body>
               Tem certeza que deseja excluir este perfil? Esta ação não poderá
               ser desfeita!
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() => setShow(false)}>Não</Button>
+              <Button onClick={() => setShowConfirmation(false)}>Não</Button>
               <Button onClick={handleDelete}>Sim</Button>
             </Modal.Footer>
           </Modal>
+          <RegisterModal
+            show={showEdit}
+            setModalShow={setShowEdit}
+            shelterInitialValues={shelterInitialValues}
+            type="Editar"
+          />
         </Container>
       ) : null}
     </Container>

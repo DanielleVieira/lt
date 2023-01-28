@@ -4,7 +4,7 @@ import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
 import { Checkbox } from "../Checkbox";
 import { Select } from "../Select";
-import { Button, Container, Row, Stack} from "react-bootstrap";
+import { Button, Container, Row, Stack } from "react-bootstrap";
 import { db } from "../../../services/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../../../contexts/AuthProvider";
@@ -12,36 +12,14 @@ import { useContext } from "react";
 import { generateHash } from "../../../services/geolocation";
 import { ToastContext } from "../../../contexts/ToastProvider ";
 
-const RegisterShelterForm = (props) => {
+const ShelterForm = (props) => {
   const { user } = useContext(AuthContext);
   const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
 
   return (
     <>
       <Formik
-        initialValues={{
-          name: "",
-          contact: "",
-          description: "",
-          // aceept conditions
-          payment: false,
-          time: "",
-          havePets: false,
-          number: 0,
-          //type
-          cats: true,
-          dogs: true,
-          others: true,
-          //size
-          small: true,
-          middle: true,
-          big: true,
-          //social medias
-          facebook: "",
-          twitter: "",
-          instagram: "",
-          images: [],
-        }}
+        initialValues={props.shelterInitialValues}
         validationSchema={Yup.object({
           name: Yup.string()
             .min(3, "Deve ter 3 caracteres ou mais")
@@ -49,8 +27,11 @@ const RegisterShelterForm = (props) => {
             .required("Obrigatório"),
           contact: Yup.string()
             .matches(
-              '^((1[1-9])|([2-9][0-9]))((3[0-9]{3}[0-9]{4})|(9[0-9]{3}[0-9]{5}))$',
-              { message: "Número de contato inválido. Utilize apenas números e inclua o DDD" }
+              "^((1[1-9])|([2-9][0-9]))((3[0-9]{3}[0-9]{4})|(9[0-9]{3}[0-9]{5}))$",
+              {
+                message:
+                  "Número de contato inválido. Utilize apenas números e inclua o DDD",
+              }
             )
             .required("Obrigatório"),
           description: Yup.string()
@@ -96,24 +77,24 @@ const RegisterShelterForm = (props) => {
         onSubmit={(values, { setSubmitting }) => {
           const type = [];
           const size = [];
-          
-          if(values.cats) {
+
+          if (values.cats) {
             type.push("gatos");
           }
-          if(values.dogs){
+          if (values.dogs) {
             type.push("cachorros");
           }
-          if(values.others) {
+          if (values.others) {
             type.push("outros");
           }
 
-          if(values.small) {
+          if (values.small) {
             size.push("pequenos");
           }
-          if(values.middle){
+          if (values.middle) {
             size.push("médios");
           }
-          if(values.big) {
+          if (values.big) {
             size.push("grandes");
           }
 
@@ -126,46 +107,37 @@ const RegisterShelterForm = (props) => {
               size: size,
               number: values.number,
               time: values.time,
-              payment: `${values.payment? "sim" : "não"}`,
-              havePets: `${values.havePets? "sim" : "não"}`,
+              payment: `${values.payment ? "sim" : "não"}`,
+              havePets: `${values.havePets ? "sim" : "não"}`,
             },
             social: {
               facebook: values.facebook,
               twitter: values.twitter,
               instagram: values.instagram,
             },
-            images: [],
+            images: values.images,
           };
           (() => {
             if ("geolocation" in navigator) {
               navigator.geolocation.getCurrentPosition(
                 (position) => {
-                  try {
-                    const { latitude, longitude } = position.coords;
-
-                    const docRef = doc(db, "shelters", user.uid);
-                    setDoc(
-                      docRef,
-                      {
-                        ...submitData,
-                        location: generateHash(latitude, longitude),
-                      },
-                      { merge: true }
-                    ).then((result) => {
-                      props.setModalShow(false);
-                      setToastText("Salvo com sucesso!");
-                      setVariant("sucess");
-                      setShowToast(true);
-                      props.setHaveShelter(true);
-                      setSubmitting(false);
-                    });
-                  } catch (error) {
+                  const { latitude, longitude } = position.coords;
+                  const docRef = doc(db, "shelters", user.uid);
+                  setDoc(
+                    docRef,
+                    {
+                      ...submitData,
+                      location: generateHash(latitude, longitude),
+                    },
+                    { merge: true }
+                  ).then(() => {
                     props.setModalShow(false);
-                    setToastText("Ocorreu um erro ao salvar!");
-                    setVariant("danger");
+                    setToastText("Salvo com sucesso!");
+                    setVariant("sucess");
                     setShowToast(true);
                     setSubmitting(false);
-                  }
+                    window.location.reload(true);
+                  });
                 },
                 (error) => {
                   setToastText(
@@ -247,7 +219,9 @@ const RegisterShelterForm = (props) => {
             </Row>
             <Row className="my-3">
               <fieldset>
-                <label>Redes Sociais <span className="text-danger">*</span></label>
+                <label>
+                  Redes Sociais <span className="text-danger">*</span>
+                </label>
                 <Row className="mb-3">
                   <TextInput
                     label="Facebook"
@@ -286,4 +260,4 @@ const RegisterShelterForm = (props) => {
   );
 };
 
-export default RegisterShelterForm;
+export default ShelterForm;

@@ -1,11 +1,5 @@
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/esm/Button";
+import { Modal, Button, Col, Nav, Row, Tab, Alert } from "react-bootstrap";
 import ShelterForm from "../Form/ShelterForm";
-import Col from "react-bootstrap/Col";
-import Nav from "react-bootstrap/Nav";
-import Row from "react-bootstrap/Row";
-import Tab from "react-bootstrap/Tab";
-import Alert from "react-bootstrap/Alert";
 
 const RegisterModal = (props) => {
   return (
@@ -19,7 +13,7 @@ const RegisterModal = (props) => {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          Cadastrar um lar temporário{" "}
+          {props.type} um lar temporário{" "}
           <p className="text-danger fs-6">* Opcional</p>
         </Modal.Title>
       </Modal.Header>
@@ -32,7 +26,9 @@ const RegisterModal = (props) => {
                   <Nav.Link eventKey="alert">Aviso</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="register">Cadastro</Nav.Link>
+                  <Nav.Link eventKey="register">
+                    {props.type === "Cadastrar" ? "Cadastro" : "Edição"}
+                  </Nav.Link>
                 </Nav.Item>
               </Nav>
             </Col>
@@ -40,18 +36,15 @@ const RegisterModal = (props) => {
               <Tab.Content>
                 <Tab.Pane eventKey="alert">
                   <Alert key={"danger"} variant={"danger"}>
-                    Para cadastrar um lar é preciso permitir que o site tenha
-                    acesso a sua geolocalização quando solicitado!
+                    Para {(props.type + "").toLowerCase()} um lar é preciso
+                    permitir que o site tenha acesso a sua geolocalização quando
+                    solicitado!
                   </Alert>
                 </Tab.Pane>
                 <Tab.Pane eventKey="register">
                   <ShelterForm
                     setModalShow={props.setModalShow}
-                    setToastText={props.setToastText}
-                    setErrorToastText={props.setErrorToastText}
-                    setShowToast={props.setShowToast}
-                    setShowErrorToast={props.setShowErrorToast}
-                    setHaveShelter={props.setHaveShelter}
+                    shelterInitialValues={props.shelterInitialValues}
                   />
                 </Tab.Pane>
               </Tab.Content>
