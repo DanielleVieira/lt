@@ -61,7 +61,7 @@ const ProfileHeader = (props) => {
 
   const icons = {
     twitter: <Twitter />,
-    facebook: <Facebook />,
+    facebook: <Facebook height="30" width="30"/>,
     instagram: <Instagram />,
   };
 
