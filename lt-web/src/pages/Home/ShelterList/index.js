@@ -10,7 +10,7 @@ const ShelterList = (props) => {
   const [results, setResults] = useState([]);
   const [list, setList] = useState([]);
 
-  const SEARCH_RADIUS = 300; //Km
+  const SEARCH_RADIUS = 150; //Km
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -24,7 +24,7 @@ const ShelterList = (props) => {
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      Por padrão o site mostra apenas os lares dentro de um raio de 300 km
+      Por padrão o site mostra apenas os lares dentro de um raio de 150 km
     </Tooltip>
   );
 
