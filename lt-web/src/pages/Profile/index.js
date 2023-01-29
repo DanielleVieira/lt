@@ -18,6 +18,7 @@ import { AuthContext } from "../../contexts/AuthProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import UploadImage from "../../components/UploadImage";
 import Loading from "../../components/Loading";
+import { ToastContext } from "../../contexts/ToastProvider ";
 
 const Profile = (props) => {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ const Profile = (props) => {
   const [isOwner, setIsOwner] = useState(false);
   const [uploadImage, setUploadImage] = useState(false);
   const { user } = useContext(AuthContext);
+  const { setShowToast, setToastText, setVariant } = useContext(ToastContext);
   const params = useParams();
   const { id } = params;
   const navigate = useNavigate();
@@ -54,10 +56,12 @@ const Profile = (props) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          setToastText("Ocorreu um erro ao carregar os dados");
+          setVariant("danger");
+          setShowToast(true);
         });
     }
-  }, [user, id]);
+  }, [user, id, setShowToast, setToastText, setVariant]);
 
   if (loading) {
     return (
